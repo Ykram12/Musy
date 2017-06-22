@@ -1,0 +1,101 @@
+options {
+    STATIC = false;
+    IGNORE_CASE = true;
+}
+
+PARSER_BEGIN(Musy)
+
+public class Musy{
+    public static void main(String[] args) throws ParseException{
+        try {
+            Musy parser = new Musy(System.in);
+            parser.start();
+            System.out.println("Syntax correct!");
+        }
+        catch (ParseException e){
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+PARSER_END(Musy)
+
+SKIP:
+{
+      " "
+    | "\r"
+    | "\t"
+    | "\n"
+}
+
+TOKEN:
+{
+      <PART : "Part">       {System.out.println("PART -> " + image);}
+    | <NOTE : "Note">       {System.out.println("NOTE -> " + image);}
+    | <QUARTER: "1/4">      {System.out.println("QUARTER -> " + image);}
+    | <HALF: "1/2">         {System.out.println("HALF -> " + image);}
+    | <WHOLE: "1/1">        {System.out.println("WHOLE -> " + image);}
+    | <COMP: "Compose>      {System.out.println("COMP -> " + image);}
+    | <COMMA : ",">         {System.out.println("COMMA -> " + image);}
+    | <LPAR : "(">          {System.out.println("LPAR -> " + image);}
+    | <RPAR : ")">          {System.out.println("RPAR -> " + image);}
+    | <LBRAC : "{">         {System.out.println("LBRAC -> " + image);}
+    | <RBRAC : "}">         {System.out.println("RBRAC -> " + image);}
+}
+
+TOKEN:
+{
+      <PLUS : "+">           {System.out.println("PLUS -> " + image);}
+    | <EQUALS : "=">         {System.out.println("EQUALS -> " + image);}
+}
+
+TOKEN:
+{      
+      <TONE : (["A"-"G"]) (("1")(["0"-"2"]) | (["1"-"9"]))>    {System.out.println("TONE -> " + image);}
+      |<ID : (["a"-"z", "A"-"Z"])(["a"-"z", "A"-"Z", "0"-"9"])*>  {System.out.println("ID -> " + image);}
+}
+
+void start():
+{}
+{
+    (
+        expression()
+    )* 
+} 
+ 
+void expression():
+{}
+{     LOOKAHEAD(3) partAssigned()
+    | variableDeclaration()
+    | variableAssignment()
+//    | LOOKAHEAD(2)
+}
+
+void variableDeclaration():
+{}
+{
+    (<NOTE>|<PART>) <ID> <EQUALS> <ID> (<PLUS> <ID>)*
+    {System.out.println("Variable Declared!\n");}
+}
+
+void variableAssignment():
+{}
+{
+    <ID> <EQUALS> <ID>
+    {System.out.println("Variable Assigned!\n");}
+}
+
+void partAssigned():
+{}
+{
+    <PART> <ID> <EQUALS> <TONE> (<QUARTER> | <HALF> | <WHOLE>) (<PLUS> <TONE> (<QUARTER> | <HALF> | <WHOLE>))*
+    {System.out.println("Part Notes Assigned!\n");}
+}
+
+void composeSong():
+{}
+{
+    <COMP> <ID>
+    {System.out.println("Song has been composed!\n");}
+}
+

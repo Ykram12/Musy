@@ -50,7 +50,7 @@ TOKEN:
 }
 
 TOKEN:
-{      
+{
       <TONE : (["A"-"G"]) (("1")(["0"-"2"]) | (["1"-"9"]))>    {System.out.println("TONE -> " + image);}
       |<ID : (["a"-"z", "A"-"Z"])(["a"-"z", "A"-"Z", "0"-"9"])*>  {System.out.println("ID -> " + image);}
 }
@@ -60,9 +60,9 @@ void start():
 {
     (
         expression()
-    )* 
-} 
- 
+    )*
+}
+
 void expression():
 {}
 {     LOOKAHEAD(3) partAssigned()
@@ -98,4 +98,3 @@ void composeSong():
     <COMP> <ID>
     {System.out.println("Song has been composed!\n");}
 }
-
